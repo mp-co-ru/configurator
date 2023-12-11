@@ -28,9 +28,7 @@ const flatNode = computed(() => {
       if (typeof val === "object" && !(val instanceof Array)) {
         result = [...result, ...flattenObject(val, _key)];
       } else {
-        if (
-          !["parentId", "id", "_static", "isOpen", "objectClass"].includes(key)
-        ) {
+        if (!["parentId", "_static", "isOpen", "objectClass"].includes(key)) {
           result.push([key, val, _key]);
         }
       }
