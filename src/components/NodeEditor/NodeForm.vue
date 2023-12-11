@@ -14,14 +14,18 @@ const props = defineProps({
   },
 });
 const flatNode = computed(() => {
-  function flattenObject(obj: Object | null, parentKey?: string) {
+  function flattenObject(
+    obj: Partial<INode> | Partial<IAttributes> | null,
+    parentKey?: string
+  ) {
     if (!obj) {
       return [];
     }
     let result: Array<any> = [];
+    // delete obj["children"];
     Object.entries(obj).forEach(([key, val]) => {
       const _key = parentKey ? parentKey + "." + key : key;
-      if (typeof val === "object") {
+      if (typeof val === "object" && !(val instanceof Array)) {
         result = [...result, ...flattenObject(val, _key)];
       } else {
         if (
