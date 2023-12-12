@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, PropType } from "vue";
 import { IAttributes, INode } from "../interfaces";
+import { NodeAttrMapping } from "../mapping";
 
 const props = defineProps({
   node: {
@@ -50,7 +51,11 @@ const flatNode = computed(() => {
   >
     <div v-for="[fieldName, fieldVal, fieldKey] in flatNode">
       <n-form-item
-        :label="fieldName"
+        :label="
+          NodeAttrMapping[fieldName].rus_name
+            ? NodeAttrMapping[fieldName].rus_name
+            : fieldName
+        "
         :path="fieldKey"
         v-if="typeof fieldVal === 'string'"
       >
@@ -61,7 +66,11 @@ const flatNode = computed(() => {
         />
       </n-form-item>
       <n-form-item
-        :label="fieldName"
+        :label="
+          NodeAttrMapping[fieldName].rus_name
+            ? NodeAttrMapping[fieldName].rus_name
+            : fieldName
+        "
         :path="fieldKey"
         v-if="typeof fieldVal === 'number'"
       >
@@ -73,7 +82,11 @@ const flatNode = computed(() => {
       </n-form-item>
       <n-form-item
         :span="12"
-        :label="fieldName"
+        :label="
+          NodeAttrMapping[fieldName].rus_name
+            ? NodeAttrMapping[fieldName].rus_name
+            : fieldName
+        "
         :path="fieldKey"
         v-if="typeof fieldVal === 'boolean'"
       >
