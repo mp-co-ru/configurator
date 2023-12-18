@@ -2,8 +2,13 @@ import { defineStore } from "pinia";
 import { ref, watch } from "vue";
 import { set, get } from "lodash";
 import { INode, nodeTypes } from "../components/interfaces";
-import { EmptyObject, EmptyTag } from "../components/Hierarchy/EmptyNodes";
-import { rootNode } from "./rootNodes";
+import {
+  EmptyAlert,
+  EmptyDataStorage,
+  EmptyObject,
+  EmptyTag,
+} from "../models/nodeTemplates";
+import { rootNode } from "../models/rootNodes";
 
 export const useHierarchyStore = defineStore("hierarchyStore", () => {
   function deleteTreeNode(path: string) {
@@ -78,8 +83,14 @@ export const useAppStateStore = defineStore("appState", () => {
   }
 
   const NodeTypes = [
-    { label: "Object", value: "Object", template: EmptyObject },
-    { label: "Tag", value: "Tag", template: EmptyTag },
+    { label: "Объект", value: "Объект", template: EmptyObject },
+    { label: "Тег", value: "Тег", template: EmptyTag },
+    {
+      label: "Хранилище данных",
+      value: "Хранилище данных",
+      template: EmptyDataStorage,
+    },
+    { label: "Тревога", value: "Тревога", template: EmptyAlert },
   ];
 
   const selectedNode = ref<INode | null>(null);

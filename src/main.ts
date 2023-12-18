@@ -23,6 +23,8 @@ import {
   faEllipsis,
   faGear,
   faPen,
+  faDatabase,
+  faBell,
 } from "@fortawesome/free-solid-svg-icons";
 
 /* add icons to the library */
@@ -38,7 +40,9 @@ library.add(
   faPen,
   faPlus,
   faEllipsis,
-  faGear
+  faGear,
+  faDatabase,
+  faBell
 );
 
 const pinia = createPinia();
