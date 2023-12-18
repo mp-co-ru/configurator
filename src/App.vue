@@ -16,7 +16,7 @@ import { darkTheme } from "naive-ui";
 const store = useAppStateStore();
 
 const theme = ref(darkTheme);
-
+const siderCollapsed = ref<boolean>(store.selectedNode == null);
 const setEditedNode = (node: INode | null) => {
   editedNode.value = node;
 };
@@ -28,40 +28,58 @@ const editedNode = ref<INode | null>(store.selectedNode);
   <n-config-provider :theme="theme">
     <n-message-provider max="3">
       <n-dialog-provider>
-        <div class="conf-header">
-          <img src="./assets/vue.svg" />
-          <h1 class="conf-header-title">Конфигуратор</h1>
-          <button class="conf-header-settings">
-            <fa-icon icon="fa-solid fa-cog"></fa-icon>
-          </button>
-        </div>
-        <div class="hierarchy-editor">
-          <div class="hierarchy-tree">
-            <div class="hierarchy-tree-menu">
-              <!-- <fa-icon icon="fa-solid fa-folder-open"></fa-icon>
-              <fa-icon icon="fa-solid fa-folder-open"></fa-icon>
-              <fa-icon icon="fa-solid fa-folder-open"></fa-icon> -->
-              <Separator
-                class="hierarchy-tree-menu-divider"
-                orientation="vertical"
-              ></Separator>
-              <div class="hierarchy-tree-menu-search">
-                <fa-icon
-                  icon="fa-solid fa-magnifying-glass"
-                  class="hierarchy-tree-menu-search-icon"
-                ></fa-icon>
-                <input class="hierarchy-tree-menu-search-input" />
-              </div>
-              <Separator
-                class="hierarchy-tree-menu-divider"
-                orientation="vertical"
-              ></Separator>
+        <n-layout has-sider sider-placement="right">
+          <div class="conf-header">
+            <div
+              class="logo"
+              style="height: 100%; padding: 0.3rem; box-sizing: border-box"
+            >
+              <img src="./assets/logo_middle_text.png" style="height: 100%" />
             </div>
-            <HierarchyTree></HierarchyTree>
+            <h1 class="conf-header-title">Конфигуратор</h1>
+            <button class="conf-header-settings">
+              <fa-icon icon="fa-solid fa-cog"></fa-icon>
+            </button>
           </div>
-          <EditForm></EditForm>
-          <AddNodeModal></AddNodeModal>
-        </div>
+          <div class="hierarchy-editor">
+            <div class="hierarchy-tree">
+              <div class="hierarchy-tree-menu">
+                <Separator
+                  class="hierarchy-tree-menu-divider"
+                  orientation="vertical"
+                ></Separator>
+                <div class="hierarchy-tree-menu-search">
+                  <fa-icon
+                    icon="fa-solid fa-magnifying-glass"
+                    class="hierarchy-tree-menu-search-icon"
+                  ></fa-icon>
+                  <input class="hierarchy-tree-menu-search-input" />
+                </div>
+                <Separator
+                  class="hierarchy-tree-menu-divider"
+                  orientation="vertical"
+                ></Separator>
+              </div>
+              <HierarchyTree></HierarchyTree>
+            </div>
+            <n-layout-sider
+              collapse-mode="width"
+              :collapsed-width="64"
+              :width="240"
+              style="height: 100%"
+              :collapsed="siderCollapsed"
+              show-trigger="bar"
+              @collapse="siderCollapsed = true"
+              @expand="siderCollapsed = false"
+            >
+              <n-space vertical class="sider-container">
+                <EditForm v-if="!siderCollapsed"></EditForm>
+                <fa-icon icon="fa-solid fa-pen"></fa-icon>
+              </n-space>
+            </n-layout-sider>
+          </div>
+        </n-layout>
+        <AddNodeModal></AddNodeModal>
       </n-dialog-provider>
     </n-message-provider>
   </n-config-provider>
@@ -137,6 +155,7 @@ const editedNode = ref<INode | null>(store.selectedNode);
   flex-flow: column;
   flex-grow: 1;
   height: 100%;
+  margin-right: 0.5rem;
 }
 
 .hierarchy-tree-menu {
@@ -164,6 +183,13 @@ const editedNode = ref<INode | null>(store.selectedNode);
   position: relative;
   display: flex;
   flex-flow: row;
+}
+
+.sider-container {
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  justify-content: center !important;
 }
 
 .hierarchy-tree-menu-search-input {
@@ -201,4 +227,3 @@ const editedNode = ref<INode | null>(store.selectedNode);
   font-weight: bold;
 }
 </style>
-./components/interfaces
