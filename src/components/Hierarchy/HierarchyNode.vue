@@ -131,10 +131,22 @@ async function getChild() {
               :color="themeVars.primaryColorHover"
               v-if="props.model.attributes.objectClass === 'prsTag'"
             ></fa-icon>
+            <fa-icon
+              icon="fa-solid fa-database"
+              :color="themeVars.primaryColorHover"
+              v-if="props.model.attributes.objectClass === 'prsDataStorage'"
+            ></fa-icon>
+            <fa-icon
+              icon="fa-solid fa-bell"
+              :color="themeVars.primaryColorHover"
+              v-if="props.model.attributes.objectClass === 'prsAlert'"
+            ></fa-icon>
             <span
               v-if="
                 props.model.attributes.objectClass !== 'prsObject' &&
-                props.model.attributes.objectClass !== 'prsTag'
+                props.model.attributes.objectClass !== 'prsTag' &&
+                props.model.attributes.objectClass !== 'prsAlert' &&
+                props.model.attributes.objectClass !== 'prsDataStorage'
               "
             ></span>
           </template>
