@@ -24,11 +24,11 @@ async function saveNode() {
   } else {
     message.success(`Тег ${res.id} создан`);
     store.createNode!.id = res.id.toString();
+    createNodeOpened.value = false;
     hierarchyStore.createTreeNode(
       store.createNode as INode,
       store.createNodePath!
     );
-    createNodeOpened.value = false;
   }
 }
 </script>

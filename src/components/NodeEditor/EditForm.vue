@@ -29,6 +29,7 @@ async function updateHandler() {
         ><fa-icon icon="fa-solid fa-pen"></fa-icon
       ></n-button>
     </div>
+    <h3>{{ selectedNode?.id }}</h3>
     <n-divider />
     <div class="node-editor-view">
       <NodeForm
@@ -37,6 +38,7 @@ async function updateHandler() {
           ({ path, newVal }) => store.updateSelectedNode(path, newVal)
         "
         :disabled="disabled"
+        :omit-fields="['objectClass', 'isOpen', 'id']"
       ></NodeForm>
     </div>
     <n-divider />

@@ -106,19 +106,18 @@ async function getChild() {
       :class="{ bold: isFolder }"
       @click="getChild"
     >
+      <div v-if="isFolder" class="folder-icon">
+        <fa-icon
+          v-if="isOpen && !loading"
+          icon="fa-solid fa-folder-open"
+        ></fa-icon>
+        <fa-icon
+          v-if="!isOpen && !loading"
+          icon="fa-solid fa-folder-closed"
+        ></fa-icon>
+        <n-spin :size="20" v-if="loading" />
+      </div>
       <div class="hierarchy-item-info">
-        <div v-if="isFolder" class="folder-icon">
-          <fa-icon
-            v-if="isOpen && !loading"
-            icon="fa-solid fa-folder-open"
-          ></fa-icon>
-          <fa-icon
-            v-if="!isOpen && !loading"
-            icon="fa-solid fa-folder-closed"
-          ></fa-icon>
-          <n-spin :size="20" v-if="loading" />
-        </div>
-
         <n-popover trigger="hover">
           <template #trigger>
             <fa-icon

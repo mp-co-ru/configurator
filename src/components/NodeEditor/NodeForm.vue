@@ -13,6 +13,10 @@ const props = defineProps({
     required: false,
     default: false,
   },
+  omitFields: {
+    type: Array<String>,
+    required: false,
+  },
 });
 const flatNode = computed(() => {
   function flattenObject(
@@ -29,7 +33,7 @@ const flatNode = computed(() => {
       if (typeof val === "object" && !(val instanceof Array)) {
         result = [...result, ...flattenObject(val, _key)];
       } else {
-        if (!["parentId", "_static", "isOpen", "objectClass"].includes(key)) {
+        if (!props.omitFields?.includes(key)) {
           result.push([key, val, _key]);
         }
       }
@@ -50,7 +54,7 @@ const flatNode = computed(() => {
     <div v-for="[fieldName, fieldVal, fieldKey] in flatNode">
       <n-form-item
         :label="
-          NodeAttrMapping[fieldName].rus_name
+          NodeAttrMapping[fieldName]
             ? NodeAttrMapping[fieldName].rus_name
             : fieldName
         "
@@ -65,7 +69,7 @@ const flatNode = computed(() => {
       </n-form-item>
       <n-form-item
         :label="
-          NodeAttrMapping[fieldName].rus_name
+          NodeAttrMapping[fieldName]
             ? NodeAttrMapping[fieldName].rus_name
             : fieldName
         "
@@ -81,7 +85,7 @@ const flatNode = computed(() => {
       <n-form-item
         :span="12"
         :label="
-          NodeAttrMapping[fieldName].rus_name
+          NodeAttrMapping[fieldName]
             ? NodeAttrMapping[fieldName].rus_name
             : fieldName
         "

@@ -30,6 +30,7 @@ export const EmptyObject: IObject = {
   children: [],
   isOpen: false,
   parentId: "",
+  _static: false,
   attributes: {
     cn: "",
     description: "",
