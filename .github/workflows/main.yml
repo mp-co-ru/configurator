@@ -32,7 +32,7 @@ jobs:
       - name: Dependencies for sphinx
         run: |
           python -m pip install --upgrade pip
-          pip install sphinx sphinx-build
+          pip install sphinx
       - name: Build HTML
         run: |
           cd docs/
