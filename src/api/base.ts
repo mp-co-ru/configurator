@@ -24,13 +24,13 @@ function getServiceEndpoint(objClass: objectClass) {
 
   switch (objClass) {
     case "prsObject":
-      serviceEndpoint = "83/v1/objects";
+      serviceEndpoint = "/v1/objects";
       break;
     case "prsTag":
-      serviceEndpoint = "80/v1/tags";
+      serviceEndpoint = "/v1/tags";
       break;
     case "prsDataStorage":
-      serviceEndpoint = "dataStorages";
+      serviceEndpoint = "/v1/dataStorages";
       break;
     default:
       break;
@@ -62,7 +62,7 @@ export async function getNode(
   }
 
   // Construct URL with parameters and query
-  const url = `http://${peresvetUrl}:${serviceEndpoint}?q="${
+  const url = `http://${peresvetUrl}${serviceEndpoint}?q="${
     Object.keys(q).length === 0 ? "{}" : jsonQuery
   }"`;
   // Get response from Peresvet platform
@@ -102,7 +102,7 @@ export async function sendNode(
     attributes: { ...attributes },
     ...(parentId === null ? {} : { parentId: parentId }),
   };
-  const url = `http://${peresvetUrl}:${serviceEndpoint}`;
+  const url = `http://${peresvetUrl}${serviceEndpoint}/`;
   console.log(url);
   try {
     const response = await fetch(url, {
@@ -117,6 +117,37 @@ export async function sendNode(
     return jsonResponse as PeresvetCreateResponse;
   } catch (e) {
     console.log(e);
+  }
+  return null;
+}
+
+export async function _linkTags(
+  peresvetUrl: String,
+  dataStorageId: String,
+  tags: INode[]
+) {
+  const serviceEndpoint = getServiceEndpoint("prsDataStorage");
+  const body = {
+    id: dataStorageId,
+    linkTags: tags.map((tag) => tag.id),
+  };
+  const url = `http://${peresvetUrl}${serviceEndpoint}/`;
+  try {
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    await response.json();
+  } catch (e) {
+    throw new PeresvetConnectionError(
+      `Произошла ошибка при привязке тегов ${tags.map((tag) => {
+        tag.id;
+      })}`
+    );
   }
   return null;
 }
@@ -141,7 +172,7 @@ export async function _updateNode(
     attributes: { ...node.attributes },
   };
   console.log(body);
-  const url = `http://${peresvetUrl}:${serviceEndpoint}/`;
+  const url = `http://${peresvetUrl}${serviceEndpoint}/`;
   try {
     const response = await fetch(url, {
       method: "PUT",
@@ -170,17 +201,14 @@ export async function _deleteNode(
     return null;
   }
   try {
-    const response = await fetch(
-      `http://${peresvetUrl}:83/v1/${serviceEndpoint}/`,
-      {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: id }),
-      }
-    );
+    const response = await fetch(`http://${peresvetUrl}${serviceEndpoint}/`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: id }),
+    });
     console.log(response);
     return true;
   } catch (e) {

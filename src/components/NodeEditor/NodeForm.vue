@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, PropType } from "vue";
 import { IAttributes, INode } from "../interfaces";
+import { NodeAttrMapping } from "../mapping";
 
 const props = defineProps({
   node: {
@@ -14,19 +15,21 @@ const props = defineProps({
   },
 });
 const flatNode = computed(() => {
-  function flattenObject(obj: Object | null, parentKey?: string) {
+  function flattenObject(
+    obj: Partial<INode> | Partial<IAttributes> | null,
+    parentKey?: string
+  ) {
     if (!obj) {
       return [];
     }
     let result: Array<any> = [];
+    // delete obj["children"];
     Object.entries(obj).forEach(([key, val]) => {
       const _key = parentKey ? parentKey + "." + key : key;
-      if (typeof val === "object") {
+      if (typeof val === "object" && !(val instanceof Array)) {
         result = [...result, ...flattenObject(val, _key)];
       } else {
-        if (
-          !["parentId", "id", "_static", "isOpen", "objectClass"].includes(key)
-        ) {
+        if (!["parentId", "_static", "isOpen", "objectClass"].includes(key)) {
           result.push([key, val, _key]);
         }
       }
@@ -46,7 +49,11 @@ const flatNode = computed(() => {
   >
     <div v-for="[fieldName, fieldVal, fieldKey] in flatNode">
       <n-form-item
-        :label="fieldName"
+        :label="
+          NodeAttrMapping[fieldName].rus_name
+            ? NodeAttrMapping[fieldName].rus_name
+            : fieldName
+        "
         :path="fieldKey"
         v-if="typeof fieldVal === 'string'"
       >
@@ -57,7 +64,11 @@ const flatNode = computed(() => {
         />
       </n-form-item>
       <n-form-item
-        :label="fieldName"
+        :label="
+          NodeAttrMapping[fieldName].rus_name
+            ? NodeAttrMapping[fieldName].rus_name
+            : fieldName
+        "
         :path="fieldKey"
         v-if="typeof fieldVal === 'number'"
       >
@@ -69,7 +80,11 @@ const flatNode = computed(() => {
       </n-form-item>
       <n-form-item
         :span="12"
-        :label="fieldName"
+        :label="
+          NodeAttrMapping[fieldName].rus_name
+            ? NodeAttrMapping[fieldName].rus_name
+            : fieldName
+        "
         :path="fieldKey"
         v-if="typeof fieldVal === 'boolean'"
       >

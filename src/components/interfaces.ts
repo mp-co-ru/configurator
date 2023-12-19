@@ -10,7 +10,12 @@ export interface IAttributes {
   prsIndex?: Number;
 }
 
-export type objectClass = "" | "prsObject" | "prsTag" | "prsDataStorage";
+export type objectClass =
+  | ""
+  | "prsObject"
+  | "prsTag"
+  | "prsDataStorage"
+  | "prsAlert";
 
 export const defaultAttributes: IAttributes = {
   cn: "",
@@ -60,7 +65,15 @@ export interface IObject extends Omit<INode, "attributes"> {
   attributes: IAttributes | null;
 }
 
-export type formTypeOptions = "edit" | "create";
-export type nodeTypes = "Object" | "Tag";
+export interface IAlert extends Omit<INode, "attributes"> {
+  parentId: string;
+  attributes: IAttributes | null;
+}
 
-export interface IDataSource extends INode {}
+export interface IDataStorage extends Omit<INode, "attributes"> {
+  parentId: string;
+  attributes: IAttributes | null;
+}
+
+export type formTypeOptions = "edit" | "create";
+export type nodeTypes = "Object" | "Tag" | "Alert" | "DataStorage";
