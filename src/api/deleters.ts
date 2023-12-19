@@ -1,5 +1,5 @@
 import { objectClass } from "../components/interfaces";
-import { _deleteNode } from "./main";
+import { _deleteNode } from "./base";
 
 export async function deleteNode(
   peresvetUrl: string,

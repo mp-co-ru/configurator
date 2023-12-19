@@ -1,4 +1,4 @@
-import { INode } from "../components/interfaces";
+import { INode } from "../interfaces";
 
 export const objectRootNode: INode = {
   id: "",
@@ -9,9 +9,11 @@ export const objectRootNode: INode = {
     prsDefault: false,
     description: "Root Object Node",
   },
-  children: [],
-  isOpen: false,
-  _static: false,
+  _internal: {
+    children: [],
+    isOpen: false,
+    static: false,
+  },
 };
 
 export const tagRootNode: INode = {
@@ -23,9 +25,11 @@ export const tagRootNode: INode = {
     prsDefault: false,
     description: "Root Tag Node",
   },
-  children: [],
-  isOpen: false,
-  _static: false,
+  _internal: {
+    children: [],
+    isOpen: false,
+    static: false,
+  },
 };
 
 export const dataStorageRootNode: INode = {
@@ -37,9 +41,11 @@ export const dataStorageRootNode: INode = {
     prsDefault: false,
     description: "Root DataStorage Node",
   },
-  children: [],
-  isOpen: false,
-  _static: false,
+  _internal: {
+    children: [],
+    isOpen: false,
+    static: false,
+  },
 };
 
 export const rootNode: INode = {
@@ -51,11 +57,13 @@ export const rootNode: INode = {
     prsDefault: false,
     description: "Root Node",
   },
-  children: [
-    { ...objectRootNode },
-    { ...tagRootNode },
-    { ...dataStorageRootNode },
-  ],
-  isOpen: false,
-  _static: true,
+  _internal: {
+    children: [
+      { ...objectRootNode },
+      { ...tagRootNode },
+      { ...dataStorageRootNode },
+    ],
+    isOpen: false,
+    static: true,
+  },
 };

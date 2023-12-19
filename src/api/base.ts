@@ -32,6 +32,9 @@ function getServiceEndpoint(objClass: objectClass) {
     case "prsDataStorage":
       serviceEndpoint = "/v1/dataStorages";
       break;
+    case "prsAlert":
+      serviceEndpoint = "/v1/alerts";
+      break;
     default:
       break;
   }
@@ -91,7 +94,7 @@ export async function sendNode(
   const serviceEndpoint = getServiceEndpoint(objClass);
 
   if (!serviceEndpoint) {
-    return [];
+    return null;
   }
   Object.entries(attributes).map((val) => {
     if (val[1] === "") {

@@ -17,8 +17,8 @@ export const useHierarchyStore = defineStore("hierarchyStore", () => {
     }
     const childIndex = parseInt(path[path.length - 2]);
     const parentPath = path.slice(0, -3);
-    const subtree = get<INode | null>(tree.value, parentPath);
-    if (subtree) {
+    const subtree = get(tree.value, parentPath);
+    if (subtree && subtree instanceof Array) {
       subtree.splice(childIndex, 1);
       set(tree, parentPath, subtree);
     }
@@ -28,8 +28,10 @@ export const useHierarchyStore = defineStore("hierarchyStore", () => {
     if (!tree.value) {
       return;
     }
-    let children: Array<INode> = get(tree.value, path);
-    children.push(node);
+    let children = get(tree.value, path);
+    if (children instanceof Array) {
+      children.push(node);
+    }
   }
 
   const tree = ref<INode | null>(null);
@@ -99,7 +101,7 @@ export const useAppStateStore = defineStore("appState", () => {
     const newTemplate = NodeTypes.filter(
       (t: INodeTypes) => t.label === newState
     )[0].template;
-    createNode.value = newTemplate;
+    createNode.value = newTemplate as unknown as INode;
   });
 
   const createNodeParent = ref<string | null>(null);

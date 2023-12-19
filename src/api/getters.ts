@@ -1,5 +1,5 @@
 import { INode, objectClass } from "../components/interfaces";
-import { getNode } from "./main";
+import { getNode } from "./base";
 
 class PeresvetGetError extends Error {
   constructor(message: string) {
@@ -37,6 +37,10 @@ export async function getChildren(
       const objectChildren = await getNode(peresvetUrl!, objClass, 1, id);
       const tagChildren = await getNode(peresvetUrl!, "prsTag", 1, id);
       return objectChildren.concat(tagChildren);
+    } else if (objClass === "prsTag" && id) {
+      const tagChildren = await getNode(peresvetUrl!, objClass, 1, id);
+      const alertChildren = await getNode(peresvetUrl!, "prsAlert", 1, id);
+      return tagChildren.concat(alertChildren);
     } else {
       const children = await getNode(peresvetUrl!, objClass, 1, id);
       return children;

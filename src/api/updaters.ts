@@ -1,4 +1,4 @@
-import { _updateNode } from "../api/main";
+import { _updateNode } from "../api/base";
 import { INode, objectClass } from "../components/interfaces";
 
 class PeresvetUpdateError extends Error {

@@ -1,4 +1,4 @@
-import { sendNode } from "../api/main";
+import { sendNode } from "../api/base";
 import { IAttributes, objectClass } from "../components/interfaces";
 
 export async function createNode(
@@ -7,7 +7,6 @@ export async function createNode(
   attributes: IAttributes,
   parentId?: string | null
 ) {
-  console.log(parentId);
   const objects = await sendNode(peresvetUrl, objClass, attributes, parentId);
   if (objects) {
     const rootObjects = objects;

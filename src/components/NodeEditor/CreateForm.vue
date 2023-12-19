@@ -10,6 +10,7 @@ const { createNode } = storeToRefs(store);
   <NodeForm
     :node="createNode"
     @update-field="({ path, newVal }) => store.updateCreateNode(path, newVal)"
+    :omit-fields="['id', 'objectClass', 'isOpen', 'parentId']"
   ></NodeForm>
 </template>
 <style></style>
