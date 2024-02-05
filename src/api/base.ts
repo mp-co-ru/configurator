@@ -64,10 +64,14 @@ export async function getNode(
     return [];
   }
 
+  // http://localhost/v1/tags?q="{}"
   // Construct URL with parameters and query
   const url = `http://${peresvetUrl}${serviceEndpoint}?q="${
     Object.keys(q).length === 0 ? "{}" : jsonQuery
   }"`;
+  throw new PeresvetConnectionError(
+    url
+  );
   // Get response from Peresvet platform
   try {
     const response = await fetch(url, {
