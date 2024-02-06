@@ -29,10 +29,10 @@ Node может быть обновлён с помощью команды `nvm 
    Выполняем команду 
    `git clone https://github.com/mp-co-ru/configurator.git`
 2. Переходим в корневую директорию проекта с помощью команды `cd configurator`
-3. Выполняем команду yarn install.
+3. Выполняем команду `yarn install`.
     .. note::
        Установка всех необходимых пакетов может занять некоторое время.
-4. Выполняем команду yarn dev. 
+4. Выполняем команду `yarn dev`. 
    На экране терминала должно появится сообщения вида:
    
    ```
@@ -49,12 +49,13 @@ Node может быть обновлён с помощью команды `nvm 
 
 ## Запуск с использованием Nginx на локальном хосте
 
-1. Проверка статуса  Nginx - `sudo systemctl status nginx`. В случае его отсутствия установить его - sudo apt 
-   install nginx
-2. Перейти в папку с проектом. Выполнить команду - npm run build или yarn run build.
+1. Проверка статуса  Nginx - `sudo systemctl status nginx`. 
+   В случае его отсутствия установить его - `sudo apt install nginx`
+2. Перейти в папку с проектом. Выполнить команду - `npm run build` или `yarn run build`.
    Это создаст папку с дистрибутивом dist в папке с проектом.
-3. Создайте новую конфигурацию для вашего сайта в /etc/nginx/sites-available
-   Пример (онтента файла конфигурации):
+3. Создайте новую конфигурацию для вашего сайта в `/etc/nginx/sites-available`
+   Пример (контента файла конфигурации):
+   ```
    server {
     listen <порт для прослушивания>;
     server_name <название сервера>;
@@ -68,15 +69,16 @@ Node может быть обновлён с помощью команды `nvm 
     error_log  <путь к файлу с логами ошибок>/vue-app-error.log;
     access_log <путь к файлу записей о всех запросах к вашему веб-приложению>/vue-app-access.log;
    }
-4. Создания символической ссылки на конфигурационный файл командой 
+   ```
+4. Создание символической ссылки на конфигурационный файл командой 
    `sudo ln -s /etc/nginx/sites-available/<название конфигурационного файла> /etc/nginx/sites-enabled/`. После чего следует выполнить команду `sudo nginx -t` - для проверки конфигурации NGINX на наличие ошибок.
 5. После чего следует перезаписать nginx командой `sudo systemctl reload nginx`. 
 
 ## Поддержка типов `.vue` для импорта файлов в TypeScript
 
-TypeScript по умолчанию не может обрабатывать информацию о типах для импорта .vue файлов, поэтому мы заменяем CLI tsc на vue-tsc для проверки типов. В редакторах нам нужен [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) тобы сервис языка TypeScript распознавал типы .vue.
+TypeScript по умолчанию не может обрабатывать информацию о типах для импорта .vue файлов, поэтому мы заменяем CLI tsc на vue-tsc для проверки типов. В редакторах нам нужен [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) чтобы сервис языка TypeScript распознавал типы .vue.
 
-Если вам кажется, что самостоятельный плагин TypeScript работает не достаточно быстро, Volar также реализовал [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) который работает более производительно. Вы можете включить его, следуя следующим шагам:
+Если вам кажется, что самостоятельный плагин TypeScript работает недостаточно быстро, Volar также реализовал [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) который работает более производительно. Вы можете включить его, следуя следующим шагам:
 
 1. Отключите встроенное расширение TypeScript
     1. Запустите Extensions: Show Built-in Extensions из палитры команд VSCode
