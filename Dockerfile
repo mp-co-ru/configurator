@@ -1,5 +1,9 @@
-FROM compose-nginx_all_svc_in_one
+FROM nginx:1.19.0-alpine 
+# AS prod-stage
+COPY dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx","-g", "daemon off;"]
 
-#COPY first/configurator.location.conf /etc/nginx/templates/locations/
-ADD configurator /var/www/configurator
-COPY main_page/* /var/www/
+# для запуска вью в контейнере с нджинкс надо в папке с проектом выполнить команды
+# docker build -t dockervue .
+# docker run -p 8000:80 -it --name dockervue dockervue
