@@ -65,7 +65,7 @@ async function updateHandler() {
   display: flex;
   flex-flow: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: left;
 }
 
 .node-editor > .node-editor-view {
@@ -73,6 +73,7 @@ async function updateHandler() {
   overflow: scroll;
   scrollbar-gutter: stable;
   scrollbar-width: thin;
+  padding-top: 1rem;
 }
 
 .node-editor > .node-editor-save {
