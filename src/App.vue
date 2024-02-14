@@ -211,7 +211,7 @@ const editedNode = ref<INode | null>(store.selectedNode);
 }
 
 .hierarchy-tree-viewer {
-  overflow: scroll;
+  overflow: auto;
 }
 
 .hierarchy-block {
