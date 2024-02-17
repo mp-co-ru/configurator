@@ -56,7 +56,8 @@ export async function getNode(
   };
 
   // Convert Object to json
-  const jsonQuery = JSON.stringify(q).replace(/"/g, '\\"');
+  // const jsonQuery = JSON.stringify(q).replace(/"/g, '\\"');
+  const jsonQuery = JSON.stringify(q);
 
   const serviceEndpoint = getServiceEndpoint(objClass);
 
@@ -66,12 +67,9 @@ export async function getNode(
 
   // http://localhost/v1/tags?q="{}"
   // Construct URL with parameters and query
-  const url = `http://${peresvetUrl}${serviceEndpoint}?q="${
+  const url = `http://${peresvetUrl}${serviceEndpoint}?q=${
     Object.keys(q).length === 0 ? "{}" : jsonQuery
-  }"`;
-  throw new PeresvetConnectionError(
-    url
-  );
+  }`;
   // Get response from Peresvet platform
   try {
     const response = await fetch(url, {
