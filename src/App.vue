@@ -65,7 +65,7 @@ const editedNode = ref<INode | null>(store.selectedNode);
             <n-layout-sider
               collapse-mode="width"
               :collapsed-width="64"
-              :width="240"
+              :width="480"
               style="height: 100%"
               :collapsed="siderCollapsed"
               show-trigger="bar"
@@ -189,7 +189,8 @@ const editedNode = ref<INode | null>(store.selectedNode);
   height: 100%;
   display: flex;
   flex-flow: column;
-  justify-content: center !important;
+  overflow: auto;
+  justify-content: top !important;
 }
 
 .hierarchy-tree-menu-search-input {

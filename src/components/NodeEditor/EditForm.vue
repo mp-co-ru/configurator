@@ -70,7 +70,7 @@ async function updateHandler() {
 
 .node-editor > .node-editor-view {
   height: 100%;
-  overflow: scroll;
+  overflow: auto;
   scrollbar-gutter: stable;
   scrollbar-width: thin;
   padding-top: 1rem;
