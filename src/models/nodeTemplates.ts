@@ -1,4 +1,4 @@
-import { IAlert, IDataStorage, IObject, ITag } from "../components/interfaces";
+import { IAlert, IDataStorage, IObject, ITag, IConnector } from "../components/interfaces";
 
 export const EmptyTag: ITag = {
   id: null,
@@ -57,6 +57,21 @@ export const EmptyAlert: IAlert = {
     prsDefault: false,
     prsEntityTypeCode: 0,
     prsIndex: 0,
+  },
+};
+
+export const EmptyConnector: IConnector = {
+  id: "",
+  children: [],
+  isOpen: false,
+  parentId: "",
+  attributes: {
+    cn: "",
+    description: "",
+    objectClass: "prsConnector",
+    prsJsonConfigString: "",
+    prsActive: true,
+    prsDefault: false
   },
 };
 

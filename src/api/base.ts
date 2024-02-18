@@ -35,6 +35,9 @@ function getServiceEndpoint(objClass: objectClass) {
     case "prsAlert":
       serviceEndpoint = "/v1/alerts";
       break;
+    case "prsConnector":
+      serviceEndpoint = "/v1/connectors"
+      break;
     default:
       break;
   }

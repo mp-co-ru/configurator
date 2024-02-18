@@ -140,12 +140,18 @@ async function getChild() {
               :color="themeVars.primaryColorHover"
               v-if="props.model.attributes.objectClass === 'prsAlert'"
             ></fa-icon>
+            <fa-icon
+              icon="fa-solid fa-gear"
+              :color="themeVars.primaryColorHover"
+              v-if="props.model.attributes.objectClass === 'prsConnector'"
+            ></fa-icon>
             <span
               v-if="
                 props.model.attributes.objectClass !== 'prsObject' &&
                 props.model.attributes.objectClass !== 'prsTag' &&
                 props.model.attributes.objectClass !== 'prsAlert' &&
-                props.model.attributes.objectClass !== 'prsDataStorage'
+                props.model.attributes.objectClass !== 'prsDataStorage' &&
+                props.model.attributes.objectClass !== 'prsConnector'
               "
             ></span>
           </template>
@@ -228,7 +234,7 @@ async function getChild() {
   padding: 0.5rem 1rem 0.5rem 1rem;
   display: flex;
   flex-flow: row;
-  align-items: center;
+  align-items: left;
   gap: 1rem;
   border: 1px solid transparent;
 }

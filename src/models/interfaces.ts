@@ -21,7 +21,8 @@ export type objectClass =
   | "prsObject"
   | "prsTag"
   | "prsDataStorage"
-  | "prsAlert";
+  | "prsAlert"
+  | "prsConnector";
 
 export const defaultAttributes: IAttributes = {
   cn: "",
@@ -84,5 +85,10 @@ export interface IDataStorage extends Omit<INode, "attributes"> {
   attributes: IAttributes | null;
 }
 
+export interface IConnector extends Omit<INode, "attributes"> {
+  parentId: string;
+  attributes: IAttributes | null;
+}
+
 export type formTypeOptions = "edit" | "create";
-export type nodeTypes = "Object" | "Tag" | "Alert" | "DataStorage";
+export type nodeTypes = "Object" | "Tag" | "Alert" | "DataStorage" | "Connector";

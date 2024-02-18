@@ -7,7 +7,7 @@ export const objectRootNode: INode = {
     objectClass: "prsObject",
     prsActive: false,
     prsDefault: false,
-    description: "Root Object Node",
+    description: "Объекты",
   },
   _internal: {
     children: [],
@@ -23,7 +23,23 @@ export const tagRootNode: INode = {
     objectClass: "prsTag",
     prsActive: false,
     prsDefault: false,
-    description: "Root Tag Node",
+    description: "Теги",
+  },
+  _internal: {
+    children: [],
+    isOpen: false,
+    static: false,
+  },
+};
+
+export const connectorRootNode: INode = {
+  id: "",
+  attributes: {
+    cn: "Коннекторы",
+    objectClass: "prsConnector",
+    prsActive: false,
+    prsDefault: false,
+    description: "Коннекторы",
   },
   _internal: {
     children: [],
@@ -39,7 +55,7 @@ export const dataStorageRootNode: INode = {
     objectClass: "prsDataStorage",
     prsActive: false,
     prsDefault: false,
-    description: "Root DataStorage Node",
+    description: "Хранилища данных",
   },
   _internal: {
     children: [],
