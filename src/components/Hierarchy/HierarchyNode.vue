@@ -7,6 +7,7 @@ import { useDialog, useMessage, useThemeVars } from "naive-ui";
 import AddNodeButton from "./AddNodeButton.vue";
 import { getChildren } from "../../api/getters";
 import { deleteNode } from "../../api/deleters";
+import { linkTagToDataStorage } from "../../api/base";
 
 const themeVars = useThemeVars();
 const store = useAppStateStore();
@@ -15,10 +16,10 @@ const dialog = useDialog();
 
 async function handleDelete(id: string, objClass: objectClass) {
   dialog.warning({
-    title: "Confirm",
-    content: "Are you sure?",
-    positiveText: "Sure",
-    negativeText: "Not Sure",
+    title: "Подтверждение",
+    content: "Вы уверены?",
+    positiveText: "Да",
+    negativeText: "Нет",
     onPositiveClick: () => {
       deleteNode(hierarchyStore.peresvetUrl!, objClass, id).then((res) => {
         if (res) {
@@ -26,7 +27,7 @@ async function handleDelete(id: string, objClass: objectClass) {
           hierarchyStore.deleteTreeNode(props.path);
           message.success("Удален");
         } else {
-          message.error(`Ошибка удаления нода ${id}`);
+          message.error(`Ошибка удаления узла ${id}`);
         }
       });
     },
@@ -58,7 +59,7 @@ const pathPrefix = computed(() => (props.path !== "" ? "." : ""));
 
 const nodeOptions = [
   {
-    label: "Добавить нод",
+    label: "Добавить узел",
     key: "addChild",
   },
 ];
@@ -98,6 +99,27 @@ async function getChild() {
     loading.value = false;
   }
 }
+
+function startDrag(evt: any, id: string, objClass: objectClass) {
+  evt.dataTransfer.dropEffect = 'move'
+  evt.dataTransfer.effectAllowed = 'move'
+  evt.dataTransfer.setData('itemID', id)
+  evt.dataTransfer.setData('objClass', objClass)
+}
+
+async function onDrop(evt: any, id: string, objClass: objectClass) {
+  const movedID = evt.dataTransfer.getData('itemID')
+  const movedObjectClass = evt.dataTransfer.getData('objClass')
+  if (id == movedID) {
+    console.log("Узел перемещён сам в себя")
+  }
+
+  if ((objClass == 'prsDataStorage') && (movedObjectClass == 'prsTag')) {
+    await linkTagToDataStorage(hierarchyStore.peresvetUrl!, id, movedID)
+    await getChild()
+  }
+}
+
 </script>
 <template>
   <li class="hierarchy-item">
@@ -157,7 +179,12 @@ async function getChild() {
           </template>
           <span>Объект</span>
         </n-popover>
-        <span class="hierarchy-node-name">{{ model.attributes.cn }}</span>
+        <span class="hierarchy-node-name"
+          draggable
+          @drop="onDrop($event,  model.id, model.attributes.objectClass)"
+          @dragstart="startDrag($event, model.id, model.attributes.objectClass)"
+          @dragover.prevent
+          @dragenter.prevent>{{ model.attributes.cn }}</span>
         <n-divider vertical></n-divider>
         <div class="hierarchy-item-options">
           <n-button-group horizontal>
