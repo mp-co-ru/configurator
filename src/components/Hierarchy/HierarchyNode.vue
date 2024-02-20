@@ -101,6 +101,7 @@ async function getChild() {
 }
 
 function startDrag(evt: any, id: string, objClass: objectClass) {
+  console.log("Start drag")
   evt.dataTransfer.dropEffect = 'move'
   evt.dataTransfer.effectAllowed = 'move'
   evt.dataTransfer.setData('itemID', id)
