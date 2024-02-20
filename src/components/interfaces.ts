@@ -21,7 +21,7 @@ export type objectClass =
 export const defaultAttributes: IAttributes = {
   cn: "",
   objectClass: "",
-  prsActive: false,
+  prsActive: true,
   prsDefault: false,
   description: "",
   prsJsonConfigString: "",

@@ -7,6 +7,7 @@ import {
   EmptyDataStorage,
   EmptyObject,
   EmptyTag,
+  EmptyConnector,
 } from "../models/nodeTemplates";
 import { rootNode } from "../models/rootNodes";
 
@@ -93,6 +94,7 @@ export const useAppStateStore = defineStore("appState", () => {
       template: EmptyDataStorage,
     },
     { label: "Тревога", value: "Тревога", template: EmptyAlert },
+    { label: "Коннектор", value: "Коннектор", template: EmptyConnector },
   ];
 
   const selectedNode = ref<INode | null>(null);

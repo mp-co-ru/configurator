@@ -101,7 +101,6 @@ async function getChild() {
 }
 
 function startDrag(evt: any, id: string, objClass: objectClass) {
-  console.log("Start drag")
   evt.dataTransfer.dropEffect = 'move'
   evt.dataTransfer.effectAllowed = 'move'
   evt.dataTransfer.setData('itemID', id)
@@ -112,7 +111,14 @@ async function onDrop(evt: any, id: string, objClass: objectClass) {
   const movedID = evt.dataTransfer.getData('itemID')
   const movedObjectClass = evt.dataTransfer.getData('objClass')
   if (id == movedID) {
-    console.log("Узел перемещён сам в себя")
+    message.error("Узел перемещён сам в себя")
+    return
+  } else if ((objClass == "prsTag") && (movedObjectClass == objClass)) {
+    message.error("Тег не может быть перемещён внутрь другого тега.")
+    return
+  } else if ((objClass == "prsTag") && (movedObjectClass == "prsObject")) {
+    message.error("Объект не может быть перемещён внутрь тега.")
+    return
   }
 
   if ((objClass == 'prsDataStorage') && (movedObjectClass == 'prsTag')) {
@@ -128,6 +134,11 @@ async function onDrop(evt: any, id: string, objClass: objectClass) {
       class="hierarchy-item-content"
       :class="{ bold: isFolder }"
       @click="getChild"
+      draggable="true"
+      @drop="onDrop($event,  model.id, model.attributes.objectClass)"
+      @dragstart="startDrag($event, model.id, model.attributes.objectClass)"
+      @dragover.prevent
+      @dragenter.prevent
     >
       <div v-if="isFolder" class="folder-icon">
         <fa-icon
@@ -180,12 +191,9 @@ async function onDrop(evt: any, id: string, objClass: objectClass) {
           </template>
           <span>Объект</span>
         </n-popover>
-        <span class="hierarchy-node-name"
-          draggable
-          @drop="onDrop($event,  model.id, model.attributes.objectClass)"
-          @dragstart="startDrag($event, model.id, model.attributes.objectClass)"
-          @dragover.prevent
-          @dragenter.prevent>{{ model.attributes.cn }}</span>
+        <div class="hierarchy-node-name"
+
+        >{{ model.attributes.cn }}</div>
         <n-divider vertical></n-divider>
         <div class="hierarchy-item-options">
           <n-button-group horizontal>

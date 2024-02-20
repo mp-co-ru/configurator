@@ -146,7 +146,7 @@ const editedNode = ref<INode | null>(store.selectedNode);
 
 .hierarchy-editor > .hierarchy-tree {
   padding: 1rem;
-  ul {
+  & ul {
     padding-left: 50px;
   }
 }
