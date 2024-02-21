@@ -1,131 +1,131 @@
 <script setup lang="ts">
-import { defineProps, PropType, computed, ref } from "vue";
-import { INode } from "../interfaces.js";
-import type { objectClass } from "../interfaces";
-import { useAppStateStore, useHierarchyStore } from "../../Store/AppStateStore";
-import { useDialog, useMessage, useThemeVars } from "naive-ui";
-import AddNodeButton from "./AddNodeButton.vue";
-import { getChildren } from "../../api/getters";
-import { deleteNode } from "../../api/deleters";
-import { linkTagToDataStorage } from "../../api/base";
+  import { defineProps, PropType, computed, ref } from "vue";
+  import { INode } from "../interfaces.js";
+  import type { objectClass } from "../interfaces";
+  import { useAppStateStore, useHierarchyStore } from "../../Store/AppStateStore";
+  import { useDialog, useMessage, useThemeVars } from "naive-ui";
+  import AddNodeButton from "./AddNodeButton.vue";
+  import { getChildren } from "../../api/getters";
+  import { deleteNode } from "../../api/deleters";
+  import { linkTagToDataStorage } from "../../api/base";
 
-const themeVars = useThemeVars();
-const store = useAppStateStore();
-const message = useMessage();
-const dialog = useDialog();
+  const themeVars = useThemeVars();
+  const store = useAppStateStore();
+  const message = useMessage();
+  const dialog = useDialog();
 
-async function handleDelete(id: string, objClass: objectClass) {
-  dialog.warning({
-    title: "Подтверждение",
-    content: "Вы уверены?",
-    positiveText: "Да",
-    negativeText: "Нет",
-    onPositiveClick: () => {
-      deleteNode(hierarchyStore.peresvetUrl!, objClass, id).then((res) => {
-        if (res) {
-          console.log(res);
-          hierarchyStore.deleteTreeNode(props.path);
-          message.success("Удален");
-        } else {
-          message.error(`Ошибка удаления узла ${id}`);
-        }
-      });
+  async function handleDelete(id: string, objClass: objectClass) {
+    dialog.warning({
+      title: "Подтверждение",
+      content: "Вы уверены?",
+      positiveText: "Да",
+      negativeText: "Нет",
+      onPositiveClick: () => {
+        deleteNode(hierarchyStore.peresvetUrl!, objClass, id).then((res) => {
+          if (res) {
+            console.log(res);
+            hierarchyStore.deleteTreeNode(props.path);
+            message.success("Удален");
+          } else {
+            message.error(`Ошибка удаления узла ${id}`);
+          }
+        });
+      },
+      onNegativeClick: () => {
+        message.error("Отмена");
+      },
+    });
+  }
+
+  const hierarchyStore = useHierarchyStore();
+
+  const props = defineProps({
+    model: {
+      type: Object as PropType<INode>,
+      required: true,
     },
-    onNegativeClick: () => {
-      message.error("Отмена");
+    path: {
+      type: String,
+      required: true,
     },
   });
-}
+  const isOpen = ref(false);
+  const loading = ref<boolean>(false);
+  const isFolder = computed(() => {
+    return props.model.children && props.model.children.length;
+  });
 
-const hierarchyStore = useHierarchyStore();
+  const pathPrefix = computed(() => (props.path !== "" ? "." : ""));
 
-const props = defineProps({
-  model: {
-    type: Object as PropType<INode>,
-    required: true,
-  },
-  path: {
-    type: String,
-    required: true,
-  },
-});
-const isOpen = ref(false);
-const loading = ref<boolean>(false);
-const isFolder = computed(() => {
-  return props.model.children && props.model.children.length;
-});
+  const nodeOptions = [
+    {
+      label: "Добавить узел",
+      key: "addChild",
+    },
+  ];
 
-const pathPrefix = computed(() => (props.path !== "" ? "." : ""));
-
-const nodeOptions = [
-  {
-    label: "Добавить узел",
-    key: "addChild",
-  },
-];
-
-const handleNodeOptionSelect = (key: string | number) => {
-  switch (key) {
-    case "addChild":
-      store.openCreateNode();
-      store.createNodeParent = props.model.id;
-      break;
-    default:
-      break;
-  }
-};
-
-const nodeOptionsShow = ref<boolean>(false);
-
-async function getChild() {
-  if (props.model._static) {
-    if (props.model.children.length > 0) {
-      isOpen.value = !isOpen.value;
+  const handleNodeOptionSelect = (key: string | number) => {
+    switch (key) {
+      case "addChild":
+        store.openCreateNode();
+        store.createNodeParent = props.model.id;
+        break;
+      default:
+        break;
     }
-    return;
-  }
-  loading.value = true;
-  try {
-    const children = await getChildren(
-      hierarchyStore.peresvetUrl!,
-      props.model.attributes.objectClass as objectClass,
-      props.model.id.toString()
-    );
-    props.model.children = children;
-    isOpen.value = !isOpen.value;
-    loading.value = false;
-  } catch (e: any) {
-    message.error(e.message);
-    loading.value = false;
-  }
-}
+  };
 
-function startDrag(evt: any, id: string, objClass: objectClass) {
-  evt.dataTransfer.dropEffect = 'move'
-  evt.dataTransfer.effectAllowed = 'move'
-  evt.dataTransfer.setData('itemID', id)
-  evt.dataTransfer.setData('objClass', objClass)
-}
+  const nodeOptionsShow = ref<boolean>(false);
 
-async function onDrop(evt: any, id: string, objClass: objectClass) {
-  const movedID = evt.dataTransfer.getData('itemID')
-  const movedObjectClass = evt.dataTransfer.getData('objClass')
-  if (id == movedID) {
-    message.error("Узел перемещён сам в себя")
-    return
-  } else if ((objClass == "prsTag") && (movedObjectClass == objClass)) {
-    message.error("Тег не может быть перемещён внутрь другого тега.")
-    return
-  } else if ((objClass == "prsTag") && (movedObjectClass == "prsObject")) {
-    message.error("Объект не может быть перемещён внутрь тега.")
-    return
+  async function getChild() {
+    if (props.model._static) {
+      if (props.model.children.length > 0) {
+        isOpen.value = !isOpen.value;
+      }
+      return;
+    }
+    loading.value = true;
+    try {
+      const children = await getChildren(
+        hierarchyStore.peresvetUrl!,
+        props.model.attributes.objectClass as objectClass,
+        props.model.id.toString()
+      );
+      props.model.children = children;
+      isOpen.value = !isOpen.value;
+      loading.value = false;
+    } catch (e: any) {
+      message.error(e.message);
+      loading.value = false;
+    }
   }
 
-  if ((objClass == 'prsDataStorage') && (movedObjectClass == 'prsTag')) {
-    await linkTagToDataStorage(hierarchyStore.peresvetUrl!, id, movedID)
-    await getChild()
+  function startDrag(evt: any, id: string, objClass: objectClass) {
+    evt.dataTransfer.dropEffect = 'move'
+    evt.dataTransfer.effectAllowed = 'move'
+    evt.dataTransfer.setData('itemID', id)
+    evt.dataTransfer.setData('objClass', objClass)
   }
-}
+
+  async function onDrop(evt: any, id: string, objClass: objectClass) {
+    const movedID = evt.dataTransfer.getData('itemID')
+    const movedObjectClass = evt.dataTransfer.getData('objClass')
+    if (id == movedID) {
+      message.error("Узел перемещён сам в себя")
+      return
+    } else if ((objClass == "prsTag") && (movedObjectClass == objClass)) {
+      message.error("Тег не может быть перемещён внутрь другого тега.")
+      return
+    } else if ((objClass == "prsTag") && (movedObjectClass == "prsObject")) {
+      message.error("Объект не может быть перемещён внутрь тега.")
+      return
+    }
+
+    if ((objClass == 'prsDataStorage') && (movedObjectClass == 'prsTag')) {
+      await linkTagToDataStorage(hierarchyStore.peresvetUrl!, id, movedID)
+      await getChild()
+    }
+  }
 
 </script>
 <template>
