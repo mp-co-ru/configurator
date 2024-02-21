@@ -193,7 +193,7 @@ export async function _updateNode(
     await response.json();
   } catch (e) {
     throw new PeresvetConnectionError(
-      `Произошла ошибка при удалении нода ${node.id}`
+      `Произошла ошибка при удалении узла ${node.id}`
     );
   }
   return null;
@@ -248,4 +248,37 @@ function processResponse(resp: PeresvetReadResponse): INode[] {
   });
 
   return nodes as INode[];
+}
+
+export async function linkTagToDataStorage(
+  peresvetUrl: String,
+  ds_id: String,
+  tag_id: String
+) {
+  const serviceEndpoint = getServiceEndpoint("prsDataStorage");
+
+  if (!serviceEndpoint) {
+    return [];
+  }
+  const body = {
+    id: ds_id,
+    linkTags: [{"tagId": tag_id}]
+  };
+  const url = `http://${peresvetUrl}${serviceEndpoint}/`;
+  try {
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    await response.json();
+  } catch (e) {
+    throw new PeresvetConnectionError(
+      `Произошла ошибка при привязке тега ${tag_id} к хранилищу ${ds_id}.`
+    );
+  }
+  return null;
 }

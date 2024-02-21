@@ -38,9 +38,8 @@ export async function getChildren(
       const tagChildren = await getNode(peresvetUrl!, "prsTag", 1, id);
       return objectChildren.concat(tagChildren);
     } else if (objClass === "prsTag" && id) {
-      const tagChildren = await getNode(peresvetUrl!, objClass, 1, id);
       const alertChildren = await getNode(peresvetUrl!, "prsAlert", 1, id);
-      return tagChildren.concat(alertChildren);
+      return alertChildren;
     } else {
       const children = await getNode(peresvetUrl!, objClass, 1, id);
       return children;
