@@ -31,10 +31,15 @@ export const defaultAttributes: IAttributes = {
 
 export interface INode {
   [index: string | number]: Boolean | INode[] | string | IAttributes | null;
+  // запрос на получение "детей" узла
+  // если свойство = null, то у узла не может быть детей
+  // если свойство начинается со слэша, то это - адрес запроса к платформе на получение детей
+  getChildrenRequest: string | null;
   id: string;
   attributes: IAttributes;
   children: INode[];
   isOpen: Boolean;
+  // флаг того, что узел вспомогательный
   _static: Boolean;
 }
 

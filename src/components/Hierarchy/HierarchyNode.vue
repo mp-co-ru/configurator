@@ -77,6 +77,7 @@
 
   const nodeOptionsShow = ref<boolean>(false);
 
+  /*
   async function getChild() {
     if (props.model._static) {
       if (props.model.children.length > 0) {
@@ -90,6 +91,36 @@
         hierarchyStore.peresvetUrl!,
         props.model.attributes.objectClass as objectClass,
         props.model.id.toString()
+      );
+      props.model.children = children;
+      isOpen.value = !isOpen.value;
+      loading.value = false;
+    } catch (e: any) {
+      message.error(e.message);
+      loading.value = false;
+    }
+  }
+  */
+  async function getChild() {
+    // если у узла не может быть детей, просто выйдем
+    if (props.model.getChildrenRequest === null) {
+      return;
+    }
+
+    // если узел открыт, просто закроем его
+    if (isOpen.value) {
+      isOpen.value = false;
+      return;
+    }
+    // далее получим детей узла, даже если они читались ранее
+    // тем самым можно обновить список детей узла, просто закрыв/открыв его
+    loading.value = true;
+    try {
+      const children = await getChildren(
+        hierarchyStore.peresvetUrl!,
+        props.model.getChildrenRequest,
+        props.model.attributes.objectClass as objectClass,
+        props.model.id
       );
       props.model.children = children;
       isOpen.value = !isOpen.value;
@@ -127,13 +158,13 @@
     }
   }
 
+
 </script>
 <template>
   <li class="hierarchy-item">
     <div
       class="hierarchy-item-content"
-      :class="{ bold: isFolder }"
-      @click="getChild"
+      @click="getChild()"
       draggable="true"
       @drop="onDrop($event,  model.id, model.attributes.objectClass)"
       @dragstart="startDrag($event, model.id, model.attributes.objectClass)"
@@ -191,9 +222,7 @@
           </template>
           <span>Объект</span>
         </n-popover>
-        <div class="hierarchy-node-name"
-
-        >{{ model.attributes.cn }}</div>
+        <div class="hierarchy_node_name">{{ model.attributes.cn }}</div>
         <n-divider vertical></n-divider>
         <div class="hierarchy-item-options">
           <n-button-group horizontal>

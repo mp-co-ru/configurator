@@ -2,6 +2,7 @@ import { INode } from "../components/interfaces";
 
 export const objectRootNode: INode = {
   id: "",
+  getChildrenRequest: '/v1/objects/?q={"scope":1}',
   attributes: {
     cn: "Объекты",
     objectClass: "prsObject",
@@ -11,11 +12,12 @@ export const objectRootNode: INode = {
   },
   children: [],
   isOpen: false,
-  _static: false,
+  _static: true,
 };
 
 export const tagRootNode: INode = {
   id: "",
+  getChildrenRequest: '/v1/tags/?q={"scope":1}',
   attributes: {
     cn: "Теги",
     objectClass: "prsTag",
@@ -25,11 +27,12 @@ export const tagRootNode: INode = {
   },
   children: [],
   isOpen: false,
-  _static: false,
+  _static: true,
 };
 
 export const dataStorageRootNode: INode = {
   id: "",
+  getChildrenRequest: '/v1/dataStorages/?q={"scope":1}',
   attributes: {
     cn: "Хранилища данных",
     objectClass: "prsDataStorage",
@@ -39,11 +42,12 @@ export const dataStorageRootNode: INode = {
   },
   children: [],
   isOpen: false,
-  _static: false,
+  _static: true,
 };
 
 export const connectorRootNode: INode = {
   id: "",
+  getChildrenRequest: '/v1/connectors/?q={"scope":1}',
   attributes: {
     cn: "Коннекторы",
     objectClass: "prsConnector",
@@ -53,24 +57,20 @@ export const connectorRootNode: INode = {
   },
   children: [],
   isOpen: false,
-  _static: false,
+  _static: true,
 };
 
 export const rootNode: INode = {
   id: "",
+  getChildrenRequest: "Объекты.Теги.Хранилища данных.Коннекторы",
   attributes: {
-    cn: "Root",
+    cn: "Модель",
     objectClass: "",
     prsActive: false,
     prsDefault: false,
     description: "Root Node",
   },
-  children: [
-    { ...objectRootNode },
-    { ...tagRootNode },
-    { ...dataStorageRootNode },
-    { ...connectorRootNode },
-  ],
+  children: [],
   isOpen: false,
   _static: true,
 };

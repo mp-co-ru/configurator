@@ -19,7 +19,7 @@ export class PeresvetConnectionError extends Error {
   }
 }
 
-function getServiceEndpoint(objClass: objectClass) {
+export function getServiceEndpoint(objClass: objectClass) {
   let serviceEndpoint: string | null = null;
 
   switch (objClass) {
@@ -44,6 +44,7 @@ function getServiceEndpoint(objClass: objectClass) {
   return serviceEndpoint;
 }
 
+/*
 export async function getNode(
   peresvetUrl: String,
   objClass: objectClass,
@@ -87,6 +88,32 @@ export async function getNode(
     return processResponse(jsonResponse as PeresvetReadResponse);
   } catch (e) {
     throw new PeresvetConnectionError("Не получается соединиться с платформой");
+  }
+}
+*/
+export async function getNode(
+  peresvetUrl: string,
+  request: string
+): Promise<INode[]> {
+
+  // http://localhost/v1/tags?q="{}"
+  // Construct URL with parameters and query
+  const url = `http://${peresvetUrl}${request}`;
+  // Get response from Peresvet platform
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+    });
+    if (response.status === 404) {
+      throw new PeresvetConnectionError(
+        "Нет соединения с платформой"
+      );
+    }
+    const jsonResponse = await response.json();
+
+    return processResponse(jsonResponse as PeresvetReadResponse);
+  } catch (e) {
+    throw new PeresvetConnectionError(`Ошибка получения дочерних узлов: ${e}`);
   }
 }
 
