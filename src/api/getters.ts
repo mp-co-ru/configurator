@@ -104,17 +104,7 @@ export async function getChildren(
       }
     } else { // то есть id = "", то есть это - вспомогательный узел
       children = children.concat(await getNode(peresvetUrl!, childrenRequest!));
-      /*
-      if (children.length > 0) {
-        let child_class = children[0].attributes["objectClass"];
-        let end_point = getServiceEndpoint(child_class);
-        children.forEach(
-          function (child) {
-            child.getChildrenRequest = `http://${peresvetUrl}/${end_point}/?q={"base":${}}`
-          }
-        )
-      }
-      */
+
     }
 
     if (childrenRequest === "") {
