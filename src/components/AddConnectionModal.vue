@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import { useHierarchyStore } from "../Store/AppStateStore";
-import { getRootObjects, getRootTags } from "../api/getters";
-import { useMessage } from "naive-ui";
+//import { getRootObjects, getRootTags } from "../api/getters";
+//import { useMessage } from "naive-ui";
 
 const hierarchyStore = useHierarchyStore();
-const message = useMessage();
+//const message = useMessage();
 
 const props = defineProps({
   opened: {
@@ -27,6 +27,7 @@ async function fillTree() {
     return;
   }
   hierarchyStore.initTree();
+  /*
   try {
     const rootObjects = await getRootObjects(hierarchyStore.peresvetUrl);
     hierarchyStore.tree!.children.find(
@@ -45,6 +46,7 @@ async function fillTree() {
   } catch (e: any) {
     message.error(`Ошибка при установке связи с сервисом tags: ${e.message}`);
   }
+  */
 }
 
 async function getConection() {

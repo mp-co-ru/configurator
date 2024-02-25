@@ -11,7 +11,7 @@ export const objectRootNode: INode = {
   },
   children: [],
   isOpen: false,
-  _static: false,
+  _static: true,
 };
 
 export const tagRootNode: INode = {
@@ -25,7 +25,7 @@ export const tagRootNode: INode = {
   },
   children: [],
   isOpen: false,
-  _static: false,
+  _static: true,
 };
 
 export const dataStorageRootNode: INode = {
@@ -39,7 +39,7 @@ export const dataStorageRootNode: INode = {
   },
   children: [],
   isOpen: false,
-  _static: false,
+  _static: true,
 };
 
 export const connectorRootNode: INode = {
@@ -53,24 +53,19 @@ export const connectorRootNode: INode = {
   },
   children: [],
   isOpen: false,
-  _static: false,
+  _static: true,
 };
 
 export const rootNode: INode = {
   id: "",
   attributes: {
-    cn: "Root",
+    cn: "Модель",
     objectClass: "",
     prsActive: false,
     prsDefault: false,
     description: "Root Node",
   },
-  children: [
-    { ...objectRootNode },
-    { ...tagRootNode },
-    { ...dataStorageRootNode },
-    { ...connectorRootNode },
-  ],
+  children: [],
   isOpen: false,
   _static: true,
 };

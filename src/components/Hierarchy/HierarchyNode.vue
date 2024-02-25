@@ -7,7 +7,7 @@
   import AddNodeButton from "./AddNodeButton.vue";
   import { getChildren } from "../../api/getters";
   import { deleteNode } from "../../api/deleters";
-  import { linkTagToDataStorage } from "../../api/base";
+  import { linkTagToDataStorage, linkTagToObject } from "../../api/base";
 
   const themeVars = useThemeVars();
   const store = useAppStateStore();
@@ -77,6 +77,7 @@
 
   const nodeOptionsShow = ref<boolean>(false);
 
+  /*
   async function getChild() {
     if (props.model._static) {
       if (props.model.children.length > 0) {
@@ -90,6 +91,31 @@
         hierarchyStore.peresvetUrl!,
         props.model.attributes.objectClass as objectClass,
         props.model.id.toString()
+      );
+      props.model.children = children;
+      isOpen.value = !isOpen.value;
+      loading.value = false;
+    } catch (e: any) {
+      message.error(e.message);
+      loading.value = false;
+    }
+  }
+  */
+  async function getChild() {
+
+    // если узел открыт, просто закроем его
+    if (isOpen.value) {
+      isOpen.value = false;
+      return;
+    }
+    // далее получим детей узла, даже если они читались ранее
+    // тем самым можно обновить список детей узла, просто закрыв/открыв его
+    loading.value = true;
+    try {
+      const children = await getChildren(
+        hierarchyStore.peresvetUrl!,
+        props.model.attributes.objectClass as objectClass,
+        props.model.id
       );
       props.model.children = children;
       isOpen.value = !isOpen.value;
@@ -121,9 +147,14 @@
       return
     }
 
-    if ((objClass == 'prsDataStorage') && (movedObjectClass == 'prsTag')) {
-      await linkTagToDataStorage(hierarchyStore.peresvetUrl!, id, movedID)
-      await getChild()
+    if ((objClass === 'prsObject') && (movedObjectClass === 'prsTag')) {
+      await linkTagToObject(hierarchyStore.peresvetUrl!, id, movedID);
+      await getChild();
+    }
+
+    if ((objClass === 'prsDataStorage') && (movedObjectClass === 'prsTag')) {
+      await linkTagToDataStorage(hierarchyStore.peresvetUrl!, id, movedID);
+      await getChild();
     }
   }
 
@@ -132,10 +163,9 @@
   <li class="hierarchy-item">
     <div
       class="hierarchy-item-content"
-      :class="{ bold: isFolder }"
-      @click="getChild"
+      @click="getChild()"
       draggable="true"
-      @drop="onDrop($event,  model.id, model.attributes.objectClass)"
+      @drop="onDrop($event, model.id, model.attributes.objectClass)"
       @dragstart="startDrag($event, model.id, model.attributes.objectClass)"
       @dragover.prevent
       @dragenter.prevent
@@ -191,11 +221,9 @@
           </template>
           <span>Объект</span>
         </n-popover>
-        <div class="hierarchy-node-name"
+        <span class="hierarchy_node_name">{{ model.attributes.cn }}</span>
 
-        >{{ model.attributes.cn }}</div>
-        <n-divider vertical></n-divider>
-        <div class="hierarchy-item-options">
+        <span class="hierarchy-item-options">
           <n-button-group horizontal>
             <n-button tertiary size="tiny" round>
               <fa-icon
@@ -222,8 +250,9 @@
               </n-dropdown>
             </n-button>
           </n-button-group>
+        </span>
+
         </div>
-      </div>
     </div>
     <ul class="hierarchy-block" v-show="isOpen" v-if="isFolder">
       <HierarchyNode
@@ -245,7 +274,8 @@
 <style>
 .hierarchy-item {
   padding: 0.2rem;
-  width: 400px;
+  width: 500px;
+  align-content: flex-start;
 }
 
 .hierarchy-item::marker {
@@ -255,9 +285,9 @@
 .hierarchy-item > .hierarchy-item-content {
   display: flex;
   gap: 1rem;
-  align-items: center;
   flex-flow: row;
   width: 100%;
+  align-content: flex-start;
 }
 
 .hierarchy-item > .hierarchy-item-content > .hierarchy-item-info {
@@ -270,9 +300,14 @@
   padding: 0.5rem 1rem 0.5rem 1rem;
   display: flex;
   flex-flow: row;
-  align-items: left;
+  align-items: center;
   gap: 1rem;
   border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.hierarchy-item > .hierarchy-item-content > .hierarchy-item-info > .hierarchy-item-info-left {
+  justify-content: left;
 }
 
 .hierarchy-item

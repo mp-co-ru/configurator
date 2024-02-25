@@ -22,7 +22,7 @@ async function updateHandler() {
 }
 </script>
 <template>
-  <div class="node-editor" v-if="store.selectedNode">
+  <div class="node-editor" v-if="store.selectedNode && !store.selectedNode._static">
     <div class="node-editor-title">
       <h2>Свойства</h2>
       <n-button circle @click="disabled = !disabled"
