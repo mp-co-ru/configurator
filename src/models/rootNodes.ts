@@ -2,7 +2,6 @@ import { INode } from "../components/interfaces";
 
 export const objectRootNode: INode = {
   id: "",
-  getChildrenRequest: '/v1/objects/?q={"scope":1}',
   attributes: {
     cn: "Объекты",
     objectClass: "prsObject",
@@ -17,7 +16,6 @@ export const objectRootNode: INode = {
 
 export const tagRootNode: INode = {
   id: "",
-  getChildrenRequest: '/v1/tags/?q={"scope":1}',
   attributes: {
     cn: "Теги",
     objectClass: "prsTag",
@@ -32,7 +30,6 @@ export const tagRootNode: INode = {
 
 export const dataStorageRootNode: INode = {
   id: "",
-  getChildrenRequest: '/v1/dataStorages/?q={"scope":1}',
   attributes: {
     cn: "Хранилища данных",
     objectClass: "prsDataStorage",
@@ -47,7 +44,6 @@ export const dataStorageRootNode: INode = {
 
 export const connectorRootNode: INode = {
   id: "",
-  getChildrenRequest: '/v1/connectors/?q={"scope":1}',
   attributes: {
     cn: "Коннекторы",
     objectClass: "prsConnector",
@@ -62,7 +58,6 @@ export const connectorRootNode: INode = {
 
 export const rootNode: INode = {
   id: "",
-  getChildrenRequest: "Объекты.Теги.Хранилища данных.Коннекторы",
   attributes: {
     cn: "Модель",
     objectClass: "",

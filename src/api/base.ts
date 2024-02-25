@@ -35,6 +35,9 @@ export function getServiceEndpoint(objClass: objectClass) {
     case "prsAlert":
       serviceEndpoint = "/v1/alerts";
       break;
+    case "prsMethod":
+      serviceEndpoint = "/v1/methods";
+      break;
     case "prsConnector":
       serviceEndpoint = "/v1/connectors"
       break;
@@ -92,16 +95,11 @@ export async function getNode(
 }
 */
 export async function getNode(
-  peresvetUrl: string,
   request: string
 ): Promise<INode[]> {
 
-  // http://localhost/v1/tags?q="{}"
-  // Construct URL with parameters and query
-  const url = `http://${peresvetUrl}${request}`;
-  // Get response from Peresvet platform
   try {
-    const response = await fetch(url, {
+    const response = await fetch(request, {
       method: "GET",
     });
     if (response.status === 404) {
@@ -110,6 +108,35 @@ export async function getNode(
       );
     }
     const jsonResponse = await response.json();
+
+    return processResponse(jsonResponse as PeresvetReadResponse);
+  } catch (e) {
+    throw new PeresvetConnectionError(`Ошибка получения дочерних узлов: ${e}`);
+  }
+}
+
+export async function getLinkedNode(
+  request: string,
+  key: string
+): Promise<INode[]> {
+
+  try {
+    const response = await fetch(request, {
+      method: "GET",
+    });
+    if (response.status === 404) {
+      throw new PeresvetConnectionError(
+        "Нет соединения с платформой"
+      );
+    }
+    let jsonResponse = await response.json();
+
+    jsonResponse = {
+      "data": jsonResponse["data"][0][key]
+    };
+    if (jsonResponse["data"] === null) {
+      return [];
+    }
 
     return processResponse(jsonResponse as PeresvetReadResponse);
   } catch (e) {
@@ -275,6 +302,39 @@ function processResponse(resp: PeresvetReadResponse): INode[] {
   });
 
   return nodes as INode[];
+}
+
+export async function linkTagToObject(
+  peresvetUrl: String,
+  obj_id: String,
+  tag_id: String
+) {
+  const serviceEndpoint = getServiceEndpoint("prsTag");
+
+  if (!serviceEndpoint) {
+    return [];
+  }
+  const body = {
+    id: tag_id,
+    parentId: obj_id
+  };
+  const url = `http://${peresvetUrl}${serviceEndpoint}/`;
+  try {
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    await response.json();
+  } catch (e) {
+    throw new PeresvetConnectionError(
+      `Произошла ошибка при привязке тега ${tag_id} к объекту ${obj_id}.`
+    );
+  }
+  return null;
 }
 
 export async function linkTagToDataStorage(

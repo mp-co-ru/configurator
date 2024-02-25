@@ -1,5 +1,5 @@
-import { INode, defaultAttributes, objectClass } from "../components/interfaces";
-import { getNode/*, getServiceEndpoint*/ } from "./base";
+import { INode, objectClass } from "../components/interfaces";
+import { getNode, getServiceEndpoint, getLinkedNode } from "./base";
 import { objectRootNode,
   tagRootNode,
   dataStorageRootNode,
@@ -11,6 +11,7 @@ class PeresvetGetError extends Error {
   }
 }
 
+/*
 export async function getRootObjects(peresvetUrl: string) {
   try {
     const objects = await getNode(peresvetUrl, "prsObject");
@@ -30,6 +31,7 @@ export async function getRootTags(peresvetUrl: string) {
     throw new PeresvetGetError(e.message);
   }
 }
+*/
 
 /*
 export async function getChildren(
@@ -57,23 +59,64 @@ export async function getChildren(
 
 export async function getChildren(
   peresvetUrl: string,
-  childrenRequest: string,
   objClass: objectClass,
   id: string
 ): Promise<INode[]> {
   try {
-    let children: INode[] = []
+    let children: INode[] = [];
 
     if ((objClass === "") && (id === "")) {
       // особый случай. узел - корневой
-      children.push(objectRootNode)
-      children.push(tagRootNode)
-      children.push(dataStorageRootNode)
-      children.push(connectorRootNode)
+      children.push(objectRootNode);
+      children.push(tagRootNode);
+      children.push(dataStorageRootNode);
+      children.push(connectorRootNode);
 
-      return children
+      return children;
     }
 
+    let request = "";
+    if (id === "") {
+      // особый случай - кликаем на групповой узел для сущности
+      let svcEndpoint = getServiceEndpoint(objClass);
+      request = `http://${peresvetUrl}${svcEndpoint}/?q={}`;
+      children = children.concat(await getNode(request));
+      return children;
+    }
+
+    // здесь блок, где id уже гарантированно имеет какое-то значение
+    if (objClass === "prsObject") {
+      // для объекта: получим список дочерних объектов, потом - список тегов
+      request = `http://${peresvetUrl}${getServiceEndpoint("prsObject")}?q={"base":"${id}"}`;
+      children = children.concat(await getNode(request));
+      request = `http://${peresvetUrl}${getServiceEndpoint("prsTag")}?q={"base":"${id}"}`;
+      children = children.concat(await getNode(request));
+      return children;
+    }
+
+    if (objClass === "prsTag") {
+      request = `http://${peresvetUrl}${getServiceEndpoint("prsAlert")}/?q={"base":"${id}"}`;
+      children = children.concat(await getNode(request));
+      request = `http://${peresvetUrl}${getServiceEndpoint("prsMethod")}/?q={"base":"${id}"}`;
+      children = children.concat(await getNode(request));
+      return children;
+    }
+
+    if (objClass === "prsDataStorage") {
+      request = `http://${peresvetUrl}${getServiceEndpoint(objClass)}/?q={"id":"${id}","getLinkedTags":true}`;
+      children = children.concat(await getLinkedNode(request, "linkedTags"));
+      request = `http://${peresvetUrl}${getServiceEndpoint(objClass)}/?q={"id":"${id}","getLinkedAlerts":true}`;
+      children = children.concat(await getLinkedNode(request, "linkedAlerts"));
+      return children;
+    }
+
+    if (objClass === "prsConnector") {
+      request = `http://${peresvetUrl}${getServiceEndpoint(objClass)}/?q={"id":"${id}","getLinkedTags":true}`;
+      children = children.concat(await getLinkedNode(request, "linkedTags"));
+      return children;
+    }
+
+    /*
     // обработаем случаи, когда создаются вспомогательные узлы
     if (id !== "") {
       if (objClass === "prsObject") {
@@ -106,10 +149,7 @@ export async function getChildren(
       children = children.concat(await getNode(peresvetUrl!, childrenRequest!));
 
     }
-
-    if (childrenRequest === "") {
-      return [] as INode[];
-    }
+    */
 
     return children;
 

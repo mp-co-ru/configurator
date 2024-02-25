@@ -16,7 +16,11 @@ export type objectClass =
   | "prsTag"
   | "prsDataStorage"
   | "prsAlert"
-  | "prsConnector";
+  | "prsConnector"
+  | "prsMethod"
+  | "prsDatastorageTagData"
+  | "prsDatastorageAlertData"
+  | "prsConnectorTagData";
 
 export const defaultAttributes: IAttributes = {
   cn: "",
@@ -34,7 +38,6 @@ export interface INode {
   // запрос на получение "детей" узла
   // если свойство = null, то у узла не может быть детей
   // если свойство начинается со слэша, то это - адрес запроса к платформе на получение детей
-  getChildrenRequest: string | null;
   id: string;
   attributes: IAttributes;
   children: INode[];
