@@ -4,7 +4,7 @@
   import type { objectClass } from "../interfaces";
   import { useAppStateStore, useHierarchyStore } from "../../Store/AppStateStore";
   import { useDialog, useMessage, useThemeVars } from "naive-ui";
-  import AddNodeButton from "./AddNodeButton.vue";
+  /*import AddNodeButton from "./AddNodeButton.vue";*/
   import { getChildren } from "../../api/getters";
   import { deleteNode } from "../../api/deleters";
   import { linkTagToDataStorage, linkTagToObject } from "../../api/base";
@@ -48,12 +48,21 @@
       type: String,
       required: true,
     },
+    value: {
+      type: String
+    }
   });
   const isOpen = ref(false);
   const loading = ref<boolean>(false);
   const isFolder = computed(() => {
-    return props.model.children && props.model.children.length;
-  });
+      //return props.model.children && props.model.children.length;
+      return ((props.model.id === "") || (props.model.attributes.objectClass === 'prsObject') ||
+      (props.model.attributes.objectClass === 'prsAlert') ||
+      (props.model.attributes.objectClass === 'prsTag') ||
+      (props.model.attributes.objectClass === 'prsDataStorage') ||
+      (props.model.attributes.objectClass === 'prsConnector'));
+    }
+  );
 
   const pathPrefix = computed(() => (props.path !== "" ? "." : ""));
 
@@ -74,6 +83,11 @@
         break;
     }
   };
+
+  let tagValue = computed(() => {
+    return "Computed value"
+  }
+  )
 
   const nodeOptionsShow = ref<boolean>(false);
 
@@ -181,48 +195,42 @@
         ></fa-icon>
         <n-spin :size="20" v-if="loading" />
       </div>
-      <div class="hierarchy-item-info">
-        <n-popover trigger="hover">
-          <template #trigger>
-            <fa-icon
-              icon="fa-solid fa-box"
-              :color="themeVars.primaryColorHover"
-              v-if="props.model.attributes.objectClass === 'prsObject'"
-            ></fa-icon>
-            <fa-icon
-              icon="fa-solid fa-gear"
-              :color="themeVars.primaryColorHover"
-              v-if="props.model.attributes.objectClass === 'prsTag'"
-            ></fa-icon>
-            <fa-icon
-              icon="fa-solid fa-database"
-              :color="themeVars.primaryColorHover"
-              v-if="props.model.attributes.objectClass === 'prsDataStorage'"
-            ></fa-icon>
-            <fa-icon
-              icon="fa-solid fa-bell"
-              :color="themeVars.primaryColorHover"
-              v-if="props.model.attributes.objectClass === 'prsAlert'"
-            ></fa-icon>
-            <fa-icon
-              icon="fa-solid fa-gear"
-              :color="themeVars.primaryColorHover"
-              v-if="props.model.attributes.objectClass === 'prsConnector'"
-            ></fa-icon>
-            <span
-              v-if="
-                props.model.attributes.objectClass !== 'prsObject' &&
-                props.model.attributes.objectClass !== 'prsTag' &&
-                props.model.attributes.objectClass !== 'prsAlert' &&
-                props.model.attributes.objectClass !== 'prsDataStorage' &&
-                props.model.attributes.objectClass !== 'prsConnector'
-              "
-            ></span>
-          </template>
-          <span>Объект</span>
-        </n-popover>
-        <span class="hierarchy_node_name">{{ model.attributes.cn }}</span>
+      <n-popover class="hierarchy-item-info-left" trigger="hover">
+        <template #trigger>
+          <fa-icon
+            icon="fa-solid fa-box"
+            :color="themeVars.primaryColorHover"
+            v-if="props.model.attributes.objectClass === 'prsObject'"
+          ></fa-icon>
+          <fa-icon
+            icon="fa-solid fa-gear"
+            :color="themeVars.primaryColorHover"
+            v-if="props.model.attributes.objectClass === 'prsTag'"
+          ></fa-icon>
+          <fa-icon
+            icon="fa-solid fa-database"
+            :color="themeVars.primaryColorHover"
+            v-if="props.model.attributes.objectClass === 'prsDataStorage'"
+          ></fa-icon>
+          <fa-icon
+            icon="fa-solid fa-bell"
+            :color="themeVars.primaryColorHover"
+            v-if="props.model.attributes.objectClass === 'prsAlert'"
+          ></fa-icon>
+          <fa-icon
+            icon="fa-solid fa-gear"
+            :color="themeVars.primaryColorHover"
+            v-if="props.model.attributes.objectClass === 'prsConnector'"
+          ></fa-icon>
 
+        </template>
+        <span>Объект</span>
+      </n-popover>
+
+      <div class="hierarchy-item-info">
+        <span class="hierarchy_node_name-bold" v-if='model.id !== ""'>{{ model.attributes.cn }}</span>
+        <span class="hierarchy_node_name" v-else>{{ model.attributes.cn }}</span>
+        <span class="hierarchy-item-info-right" v-if="(model.attributes.objectClass === 'prsTag') && (model.id !== '')">{{ tagValue }}</span>
         <span class="hierarchy-item-options">
           <n-button-group horizontal>
             <n-button tertiary size="tiny" round>
@@ -264,10 +272,12 @@
         @click.stop="store.setSelectedNode(mod)"
       >
       </HierarchyNode>
+      <!--
       <AddNodeButton
         :parent-id="model.id"
         :path="`${props.path}${pathPrefix}children`"
       ></AddNodeButton>
+      -->
     </ul>
   </li>
 </template>
@@ -310,6 +320,10 @@
   justify-content: left;
 }
 
+.hierarchy-item > .hierarchy-item-content > .hierarchy-item-info > .hierarchy-item-info-right {
+  justify-content: right;
+}
+
 .hierarchy-item
   > .hierarchy-item-content
   > .hierarchy-item-info
@@ -331,6 +345,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.hierarchy-item
+  > .hierarchy-item-content
+  > .hierarchy-item-info
+  > .hierarchy-node-name
+  > .hierarchy-node-name-bold {
+  font-weight: bold;
 }
 
 .node-options-button {
