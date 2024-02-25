@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<html lang="ru" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>&lt;no title&gt; &#8212; документация Configurator 0.1</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
+    <script src="_static/documentation_options.js?v=490fdf2e"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=29b1f277"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <p>## Запуск с использованием Nginx на локальном хосте</p>
+<ol class="arabic">
+<li><p>Проверка статуса  Nginx - <cite>sudo systemctl status nginx</cite>.
+В случае его отсутствия установить его - <cite>sudo apt install nginx</cite></p></li>
+<li><p>Перейти в папку с проектом. Выполнить команду - <cite>npm run build</cite> или <cite>yarn run build</cite>.
+Это создаст папку с дистрибутивом dist в папке с проектом.</p></li>
+<li><p>Создайте новую конфигурацию для вашего сайта в <cite>/etc/nginx/sites-available</cite>
+Пример (контента файла конфигурации):
+<a href="#id1"><span class="problematic" id="id2">``</span></a>`
+server {</p>
+<blockquote>
+<div><p>listen &lt;порт для прослушивания&gt;;
+server_name &lt;название сервера&gt;;</p>
+<p>root &lt;путь к папке dist&gt;;
+index &lt;название html файла из папки dist&gt;;</p>
+<dl class="simple">
+<dt>location / {</dt><dd><p>try_files $uri /&lt;название html файла из папки dist&gt;;</p>
+</dd>
+</dl>
+<p>}
+error_log  &lt;путь к файлу с логами ошибок&gt;/vue-app-error.log;
+access_log &lt;путь к файлу записей о всех запросах к вашему веб-приложению&gt;/vue-app-access.log;</p>
+</div></blockquote>
+</li>
+<li><p>Создание символической ссылки на конфигурационный файл командой
+<cite>sudo ln -s /etc/nginx/sites-available/&lt;название конфигурационного файла&gt; /etc/nginx/sites-enabled/</cite>. После чего следует выполнить команду <cite>sudo nginx -t</cite> - для проверки конфигурации NGINX на наличие ошибок.</p></li>
+<li><p>После чего следует перезаписать nginx командой <cite>sudo systemctl reload nginx</cite>.</p></li>
+</ol>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Configurator</a></h1>
+
+
+
+
+
+
+
+
+<h3>Навигация</h3>
+<p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="terms.html">Используемые термины</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual.html">Инструкция</a></li>
+<li class="toctree-l1"><a class="reference internal" href="debug.html">Режим отладки</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Быстрый поиск</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Искать" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2023, Match Point Consulting.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      
+      |
+      <a href="_sources/launching.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
