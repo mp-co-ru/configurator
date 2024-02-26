@@ -2,6 +2,7 @@ import { ITag } from "../interfaces";
 
 export const EmptyTag: ITag = {
   id: null,
+  valAndTimestamp: "<Значение> <метка времени>",
   children: null,
   isOpen: false,
   parentId: "",

@@ -2,6 +2,7 @@ import { IAlert, IDataStorage, IObject, ITag, IConnector } from "../components/i
 
 export const EmptyTag: ITag = {
   id: null,
+  valAndTimestamp: "<Значение> <метка времени>",
   children: [],
   isOpen: false,
   parentId: "",

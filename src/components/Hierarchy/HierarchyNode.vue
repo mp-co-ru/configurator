@@ -7,7 +7,11 @@
   /*import AddNodeButton from "./AddNodeButton.vue";*/
   import { getChildren } from "../../api/getters";
   import { deleteNode } from "../../api/deleters";
-  import { linkTagToDataStorage, linkTagToObject } from "../../api/base";
+  import {
+    linkTagToDataStorage,
+    linkTagToObject,
+    linkTagToConnector
+  } from "../../api/base";
 
   const themeVars = useThemeVars();
   const store = useAppStateStore();
@@ -47,9 +51,6 @@
     path: {
       type: String,
       required: true,
-    },
-    value: {
-      type: String
     }
   });
   const isOpen = ref(false);
@@ -83,11 +84,6 @@
         break;
     }
   };
-
-  let tagValue = computed(() => {
-    return "Computed value"
-  }
-  )
 
   const nodeOptionsShow = ref<boolean>(false);
 
@@ -170,7 +166,60 @@
       await linkTagToDataStorage(hierarchyStore.peresvetUrl!, id, movedID);
       await getChild();
     }
+
+    if ((objClass === 'prsConnector') && (movedObjectClass === 'prsTag')) {
+      await linkTagToConnector(hierarchyStore.peresvetUrl!, id, movedID);
+      await getChild();
+    }
   }
+
+  let timer: any = null;
+
+  async function tagValueClick(model: any) {
+    if (timer === null) {
+      timer = setInterval(async() => {
+          model.valAndTimestamp = ((Math.random() * 100).toFixed(2))+'%';
+
+          try {
+            let request = `http://${hierarchyStore.peresvetUrl}/v1/data/?q={"tagId":["${model.id}"],"actual":true,"format":true}`
+            const response = await fetch(request, {
+              method: "GET",
+            });
+            if (response.status === 404) {
+              message.error("Нет соединения с платформой");
+              return;
+            }
+            const jsonResponse = await response.json();
+            if (jsonResponse["data"][0]["data"].length == 0) {
+              if (model.valAndTimestamp !== "Нет данных") {
+                model.valAndTimestamp = "Нет данных";
+              }
+            } else {
+              let value = jsonResponse["data"][0]["data"][0][0];
+              let opt = {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 4
+              };
+              let newDate: Date = new Date(jsonResponse["data"][0]["data"][0][1]);
+              let str = `${value.toLocaleString('ru-RU', opt)} : ${newDate.toLocaleString()}`;
+              if (model.valAndTimestamp !== str) {
+                model.valAndTimestamp = str;
+              }
+            }
+          } catch (e) {
+            throw message.error(`Ошибка получения данных: ${e}`)
+          }
+      }, 1000);
+    } else {
+      onDestroyed();
+    }
+  }
+
+  function onDestroyed() {
+    clearInterval(timer);
+  }
+
+
 
 </script>
 <template>
@@ -230,7 +279,7 @@
       <div class="hierarchy-item-info">
         <span class="hierarchy_node_name-bold" v-if='model.id !== ""'>{{ model.attributes.cn }}</span>
         <span class="hierarchy_node_name" v-else>{{ model.attributes.cn }}</span>
-        <span class="hierarchy-item-info-right" v-if="(model.attributes.objectClass === 'prsTag') && (model.id !== '')">{{ tagValue }}</span>
+        <span class="hierarchy-item-info-right" @click="tagValueClick(model)" v-if="(model.attributes.objectClass === 'prsTag') && (model.id !== '')">{{ model.valAndTimestamp }}</span>
         <span class="hierarchy-item-options">
           <n-button-group horizontal>
             <n-button tertiary size="tiny" round>
@@ -322,6 +371,11 @@
 
 .hierarchy-item > .hierarchy-item-content > .hierarchy-item-info > .hierarchy-item-info-right {
   justify-content: right;
+}
+
+.hierarchy-item > .hierarchy-item-content > .hierarchy-item-info > .hierarchy-item-info-right:hover {
+  border: 1px solid v-bind("themeVars.primaryColorHover");
+  background-color: #363636;
 }
 
 .hierarchy-item

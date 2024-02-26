@@ -39,6 +39,7 @@ export interface INode {
   // если свойство = null, то у узла не может быть детей
   // если свойство начинается со слэша, то это - адрес запроса к платформе на получение детей
   id: string;
+  valAndTimestamp: string;
   attributes: IAttributes;
   children: INode[];
   isOpen: Boolean;
@@ -66,6 +67,7 @@ interface ITagAttributes extends IAttributes {
 
 export interface ITag extends Omit<INode, "attributes"> {
   parentId: string;
+  valAndTimestamp: string;
   attributes: ITagAttributes | null;
 }
 

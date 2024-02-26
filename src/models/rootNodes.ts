@@ -2,6 +2,7 @@ import { INode } from "../components/interfaces";
 
 export const objectRootNode: INode = {
   id: "",
+  valAndTimestamp: "",
   attributes: {
     cn: "Объекты",
     objectClass: "prsObject",
@@ -16,6 +17,7 @@ export const objectRootNode: INode = {
 
 export const tagRootNode: INode = {
   id: "",
+  valAndTimestamp: "",
   attributes: {
     cn: "Теги",
     objectClass: "prsTag",
@@ -30,6 +32,7 @@ export const tagRootNode: INode = {
 
 export const dataStorageRootNode: INode = {
   id: "",
+  valAndTimestamp: "",
   attributes: {
     cn: "Хранилища данных",
     objectClass: "prsDataStorage",
@@ -44,6 +47,7 @@ export const dataStorageRootNode: INode = {
 
 export const connectorRootNode: INode = {
   id: "",
+  valAndTimestamp: "",
   attributes: {
     cn: "Коннекторы",
     objectClass: "prsConnector",
@@ -58,6 +62,7 @@ export const connectorRootNode: INode = {
 
 export const rootNode: INode = {
   id: "",
+  valAndTimestamp: "",
   attributes: {
     cn: "Модель",
     objectClass: "",

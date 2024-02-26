@@ -299,6 +299,10 @@ function processResponse(resp: PeresvetReadResponse): INode[] {
     node.children = [];
     node.isOpen = false;
     node.attributes = { ...defaultAttributes, ...node.attributes };
+    if ((node.attributes.objectClass === "prsTag") && (node.id !== "")) {
+      node.valAndTimestamp = "Получить значение"
+    }
+
   });
 
   return nodes as INode[];
@@ -365,6 +369,44 @@ export async function linkTagToDataStorage(
   } catch (e) {
     throw new PeresvetConnectionError(
       `Произошла ошибка при привязке тега ${tag_id} к хранилищу ${ds_id}.`
+    );
+  }
+  return null;
+}
+
+export async function linkTagToConnector(
+  peresvetUrl: String,
+  conn_id: String,
+  tag_id: String
+) {
+  const serviceEndpoint = getServiceEndpoint("prsConnector");
+
+  if (!serviceEndpoint) {
+    return [];
+  }
+  const body = {
+    id: conn_id,
+    linkTags: [{
+      "tagId": tag_id,
+      "attributes": {
+        "prsJsonConfigString": {}
+      }
+    }]
+  };
+  const url = `http://${peresvetUrl}${serviceEndpoint}/`;
+  try {
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    await response.json();
+  } catch (e) {
+    throw new PeresvetConnectionError(
+      `Произошла ошибка при привязке тега ${tag_id} к хранилищу ${conn_id}.`
     );
   }
   return null;
